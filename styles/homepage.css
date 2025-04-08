@@ -1,0 +1,144 @@
+body {
+  background-color: var(--color-light);
+  font-family: sans-serif;
+}
+
+.main {
+  padding: 40px 20px;
+}
+
+.main__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
+  margin-inline: auto;
+  padding: 40px 30px 20px;
+  max-width: 700px;
+  background-color: var(--color-white);
+  box-shadow: var(--shadow);
+  border-radius: var(--border-radius-menu);
+}
+
+.main__title {
+  font-size: clamp(26px, 3.14vw, 32px);
+}
+
+.main__controllers {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px 10px;
+  width: 100%;
+}
+
+.main__input {
+  flex-grow: 1;
+  font-size: clamp(14px, 1.57vw, 16px);
+}
+
+.modal {
+  max-width: 750px;
+  width: 80%;
+  border: none;
+  border-radius: var(--border-radius-menu);
+  padding: 0;
+
+  &::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.modal-inner {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  padding: 25px;
+  padding-bottom: 80px;
+}
+
+.modal__close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  padding-inline: 0.3em;
+  font-size: 28px;
+  color: var(--color-gray);
+
+  &:hover {
+    color: var(--color-dark-gray)
+  }
+}
+
+.modal__title {
+  align-self: center;
+}
+
+.modal__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal__input {
+  font-size: clamp(14px, 1.57vw, 16px);
+  width: 100%;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
+
+.modal__description-input {
+  width: 100%;
+  border-radius: var(--border-radius);
+  border: var(--border);
+  padding: 10px;
+  font-size: 12px;
+  resize: vertical;
+  min-height: 100px;
+
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
+}
+
+.main__list {
+  width: 100%;
+  
+}
+
+.main__item {
+  background-color: var(--color-light-contrast);
+  padding: 12px 15px;
+  border-radius: 4px;
+  border-left: 5px solid var(--color-light-grin);
+  display: flex;
+  align-items: center;
+  font-size: clamp(14px, 1.57vw, 16px);
+  word-break: break-all;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
+
+.main__item--info {
+  border: none;
+  filter: brightness(0.95)
+}
+
+.modal__error-message {
+  color: red;
+  align-self: center;
+}
+
+@media (max-width: 462px) {
+  .main__controllers {
+    flex-direction: column;
+  }
+  
+  .main__content {
+    row-gap: 10px;
+  }
+}

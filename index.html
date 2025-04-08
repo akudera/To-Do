@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do</title>
+  <link rel="stylesheet" href="./styles/main.css">
+  <link rel="stylesheet" href="./styles/homepage.css">
+  <script src="./scripts/script.js" defer type="module"></script>
+</head>
+<body>
+  <main class="main">
+    <dialog class="modal" data-js-modal>
+      <div class="modal-inner">
+        <h2 class="modal__title">Новая задача</h2>
+        <button type="button" class="modal__close-button" id="closeModal">×</button>
+        <form class="modal__form" name="modalForm">
+          <label for="modalInput" class="visually-hidden">Заголовок задачи</label>
+          <input type="text" class="modal__input input" id="modalInput" placeholder="Заголовок задачи (обязательно)" autocomplete="off"/>
+          <label for="modalDescriptionInput" class="visually-hidden">Описание задачи</label>
+          <textarea class="modal__description-input" id="modalDescriptionInput" autocomplete="off" placeholder="Описание задачи..."></textarea>
+          <button type="button" class="modal__button button" id="createTask">Сохранить задачу</button>
+        </form>
+        <div class="modal__error-message" data-js-modal-error></div>
+      </div>
+    </dialog>
+    <div class="main__content">
+      <h1 class="main__title">Мой список дел</h1>
+      <div class="main__controllers">
+        <label for="searchInput" class="visually-hidden">Поиск по заголовку</label>
+        <input type="text" id="searchInput" class="main__input input" placeholder="Поиск по заголовку..."/>
+        <button class="main__button button" type="button" id="addTask">Добавить задачу</button>
+      </div>
+      <ul class="main__list" data-js-task-list>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>
