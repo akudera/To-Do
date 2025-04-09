@@ -15,6 +15,7 @@ export default class TaskManager {
     searchInput: 'searchInput',
   }
 
+  #storageKey = 'todoTasks'
   #tasks = []
 
   constructor(modalInstance) {
@@ -25,7 +26,24 @@ export default class TaskManager {
     this.modalDescriptionInput = document.getElementById(this.#ids.modalDescriptionInput)
     this.searchInput = document.getElementById(this.#ids.searchInput)
 
+    this.loadTasksFromLocalStorage()
     this.renderTasks()
+  }
+
+  loadTasksFromLocalStorage() {
+    const storageTasks = localStorage.getItem(this.#storageKey)
+    if (storageTasks) {
+      try {
+        const parsedStorageTasks = JSON.parse(storageTasks)
+        this.#tasks = parsedStorageTasks.map((task) => new Task(task.title, task.description, task.id))
+      } catch (error) {
+        console.error("Ошибка при парсинге задачи из LocalStorage:", error)
+      }      
+    }
+  }
+
+  saveTasksToLocalStorage() {
+    localStorage.setItem(this.#storageKey, JSON.stringify(this.#tasks))
   }
 
   renderTasks(taskToRender = this.#tasks) {
@@ -36,16 +54,43 @@ export default class TaskManager {
     } else {
       this.TaskListElement.innerHTML = ''
       taskToRender.forEach((task) => {
-        const newTask = document.createElement('li')
-    
-        newTask.textContent = task.title
-        newTask.dataset.id = task.id
-        newTask.setAttribute('data-js-task', '')
-        newTask.classList.add('main__item')
-    
-        this.TaskListElement?.appendChild(newTask)
+        this.TaskListElement?.appendChild(this.createTaskElement(task))
       })
     }
+  }
+
+  createTaskElement(task) {
+    const newTask = document.createElement('li')
+    
+    newTask.textContent = task.title
+    newTask.dataset.id = task.id
+    newTask.setAttribute('data-js-task', '')
+    newTask.classList.add('main__item')
+
+    const deleteTaskButton = document.createElement('button')
+    deleteTaskButton.classList.add('main__task-delete-button')
+    deleteTaskButton.addEventListener('click', () => {
+      const taskIndexToDelete = this.#tasks.findIndex((task) => String(task.id) === String(deleteTaskButton.parentElement.dataset.id))
+
+      if (taskIndexToDelete !== -1) {
+        this.#tasks.splice(taskIndexToDelete, 1)
+        this.saveTasksToLocalStorage()
+
+        deleteTaskButton.parentElement.remove()
+        this.filterTasks(this.searchInput.value)
+
+        if (this.#tasks.length === 0) {
+          if (!this.TaskListElement.querySelector('.main__item--info')) {
+            this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
+          }
+        }
+      } else {
+        console.warn(`Задача с ID ${deleteTaskButton.parentElement.dataset.id} не найдена в массиве`);
+      }
+    })
+    newTask.appendChild(deleteTaskButton)
+    
+    return newTask
   }
 
   addTask() {
@@ -55,19 +100,15 @@ export default class TaskManager {
       
       const task = new Task(title, description)
       this.#tasks.push(task)
+      this.saveTasksToLocalStorage()
       
-      const newTask = document.createElement('li')
-    
-      newTask.textContent = task.title
-      newTask.dataset.id = task.id
-      newTask.setAttribute('data-js-task', '')
-      newTask.classList.add('main__item')
-  
-      this.TaskListElement?.appendChild(newTask)
+      this.TaskListElement?.appendChild(this.createTaskElement(task))
       this.TaskListElement?.querySelector('.main__item--info')?.remove()
   
       this.modalTitleInput.value = ''
       this.modalDescriptionInput.value = ''
+      this.searchInput.value = ''
+      this.filterTasks('')
 
       this.#modalInstance.closeModal()
     } else {
@@ -78,16 +119,21 @@ export default class TaskManager {
 
   filterTasks(value) {
     if (!value) {
-      this.TaskListElement.querySelectorAll(':not(.main__item--info)').forEach((task) => {
+      this.TaskListElement.querySelectorAll('li.hidden:not(.main__item--info)').forEach((task) => {
         task.classList.remove('hidden')
       })
       this.TaskListElement.querySelector('[data-js-not-found]')?.remove()
+      if (this.#tasks.length === 0) {
+        if (!this.TaskListElement.querySelector('.main__item--info')) {
+          this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
+        }
+      }
       return
     }
 
-    if (this.TaskListElement.querySelectorAll(':not(.main__item--info)').length > 0) {
+    if (this.TaskListElement.querySelectorAll('li:not(.main__item--info)').length > 0) {
       const search = value.toLowerCase().trim()
-      this.TaskListElement.querySelectorAll(':not(.main__item--info)').forEach((task) => {
+      this.TaskListElement.querySelectorAll('li:not(.main__item--info)').forEach((task) => {
         if (task.textContent.toLowerCase().includes(search)) {
           task.classList.remove('hidden')
         } else {
@@ -96,8 +142,8 @@ export default class TaskManager {
       })
     }
 
-    const visibleTasks = this.TaskListElement.querySelectorAll(':not(.main__item--info):not(.hidden)')
-    if (visibleTasks.length === 0 && !this.TaskListElement.querySelector('.main__item--info')) {
+    const visibleTasks = this.TaskListElement.querySelectorAll('li:not(.main__item--info):not(.hidden)')
+    if (visibleTasks.length === 0 && this.#tasks.length !== 0 && !this.TaskListElement.querySelector('.main__item--info')) {
       const notFoundMessage = document.createElement('li')
       notFoundMessage.textContent = 'По вашему запросу ничего не найдено :('
       notFoundMessage.classList.add('main__item', 'main__item--info')

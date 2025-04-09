@@ -1,6 +1,6 @@
 export default class Task {
-  constructor(title, description = '') {
-    this.id = Date.now()
+  constructor(title, description = '', id = String(Date.now())) {
+    this.id = id
     this.title = title
     this.description = description
   }

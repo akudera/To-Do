@@ -109,6 +109,8 @@ body {
 }
 
 .main__item {
+  display: flex;
+  justify-content: space-between;
   background-color: var(--color-light-contrast);
   padding: 12px 15px;
   border-radius: 4px;
@@ -126,6 +128,24 @@ body {
 .main__item--info {
   border: none;
   filter: brightness(0.95)
+}
+
+.main__task-delete-button {
+  display: flex;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  width: 30px; 
+  aspect-ratio: 1;
+
+  &::after {
+    content: '';
+    display: block;
+    width: 20px;
+    aspect-ratio: 1;
+    background: url('../assets/icons/trash-icon.svg') no-repeat center / contain;
+  }
 }
 
 .modal__error-message {

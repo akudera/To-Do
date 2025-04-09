@@ -10,6 +10,16 @@
 </head>
 <body>
   <main class="main">
+    <div class="main__content">
+      <h1 class="main__title">Мой список дел</h1>
+      <div class="main__controllers">
+        <label for="searchInput" class="visually-hidden">Поиск по заголовку</label>
+        <input type="text" id="searchInput" class="main__input input" placeholder="Поиск по заголовку..."/>
+        <button class="main__button button" type="button" id="addTask">Добавить задачу</button>
+      </div>
+      <ul class="main__list" data-js-task-list>
+      </ul>
+    </div>
     <dialog class="modal" data-js-modal>
       <div class="modal-inner">
         <h2 class="modal__title">Новая задача</h2>
@@ -24,16 +34,6 @@
         <div class="modal__error-message" data-js-modal-error></div>
       </div>
     </dialog>
-    <div class="main__content">
-      <h1 class="main__title">Мой список дел</h1>
-      <div class="main__controllers">
-        <label for="searchInput" class="visually-hidden">Поиск по заголовку</label>
-        <input type="text" id="searchInput" class="main__input input" placeholder="Поиск по заголовку..."/>
-        <button class="main__button button" type="button" id="addTask">Добавить задачу</button>
-      </div>
-      <ul class="main__list" data-js-task-list>
-      </ul>
-    </div>
   </main>
 </body>
 </html>
