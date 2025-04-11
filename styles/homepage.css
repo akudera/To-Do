@@ -147,6 +147,7 @@ body {
 }
 
 .main__task-delete-button {
+  align-self: flex-start;
   display: flex;
   justify-content: center;
   border: none;

@@ -37,18 +37,20 @@ export default class TaskManager {
     this.editTaskButton = document.getElementById(this.#ids.editTaskButton)
 
     this.TaskListElement.addEventListener('click', (event) => {
-      if (event.target.hasAttribute('data-js-task') || event.target.classList.contains('main__task-title')) {
-        this.editTaskMenu(event.target.textContent, this.getDescription(event.target.dataset.id), event.target.dataset.id)
-      }
-      
       if (event.target.classList.contains('main__task-delete-button')) {
-        const taskIndexToDelete = this.#tasks.findIndex((task) => String(task.id) === String(event.target.parentElement.dataset.id))
+        const taskIndexToDelete = this.#tasks.findIndex((task) => String(task.id) === String(event.target.closest('[data-js-task]').dataset.id))
 
         if (taskIndexToDelete !== -1) {
-          this.deleteTask(event, taskIndexToDelete)
+          this.deleteTask(event.target.closest('[data-js-task]'), taskIndexToDelete)
         } else {
           console.warn(`Задача с ID ${event.target.parentElement.dataset.id} не найдена в массиве`);
         }
+        return
+      }
+
+      if (event.target.hasAttribute('data-js-task') || event.target.classList.contains('main__task-title')) {
+        const target = event.target.closest('[data-js-task]')
+        this.editTaskMenu(target.querySelector('.main__task-title').textContent, this.getDescription(target.dataset.id), target.dataset.id)
       }
     })
 
@@ -100,18 +102,12 @@ export default class TaskManager {
     this.modalTitleInput.addEventListener('keydown', this.bindEditTaskEnterEvent)
   }
 
-  deleteTask(event, taskIndexToDelete) {
+  deleteTask(taskElement, taskIndexToDelete) {
     this.#tasks.splice(taskIndexToDelete, 1)
     this.saveTasksToLocalStorage()
 
-    event.target.parentElement.remove()
+    taskElement.remove()
     this.filterTasks(this.searchInput.value)
-
-    if (this.#tasks.length === 0) {
-      if (!this.TaskListElement.querySelector('.main__item--info')) {
-        this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
-      }
-    }
   }
 
   editTaskEvent(event, taskId) {
@@ -121,12 +117,14 @@ export default class TaskManager {
       const description = this.modalDescriptionInput.value.trim()
       
       const task = this.#tasks.find((task) => String(taskId) === String(task.id))
-      task.title = title
-      task.description = description
-      this.saveTasksToLocalStorage()
-      
-      const taskTitleElement = this.TaskListElement.querySelector(`[data-id="${taskId}"] .main__task-title`)
-      taskTitleElement.textContent = title
+      if (task) {
+        task.title = title
+        task.description = description
+        this.saveTasksToLocalStorage()
+        
+        const taskTitleElement = this.TaskListElement.querySelector(`[data-id="${taskId}"] .main__task-title`)
+        taskTitleElement.textContent = title
+      }
   
       this.modalTitleInput.value = ''
       this.modalDescriptionInput.value = ''
