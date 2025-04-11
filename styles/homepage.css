@@ -119,9 +119,19 @@ body {
   align-items: center;
   font-size: clamp(14px, 1.57vw, 16px);
   word-break: break-all;
+  transition: var(--transition-duration) background-color;
 
   &:not(:last-child) {
     margin-bottom: 10px;
+  }
+
+  &:not(.main__item--info):hover {
+    background-color: var(--color-light-gray);
+    cursor: pointer;
+  }
+
+  &:not(.main__item--info):hover:has(> .main__task-delete-button:hover) {
+    background-color: var(--color-light-contrast);
   }
 }
 
@@ -130,14 +140,23 @@ body {
   filter: brightness(0.95)
 }
 
+.main__task-title {
+  &:not(:last-child) {
+    margin-right: 8px;
+  }
+}
+
 .main__task-delete-button {
   display: flex;
   justify-content: center;
   border: none;
+  border-radius: var(--border-radius);
   padding: 0;
-  background-color: transparent;
-  width: 30px; 
+  background-color: var(--color-light-gray);
+  min-width: 30px; 
+  width: 30px;
   aspect-ratio: 1;
+  transition: var(--transition-duration) background-color;
 
   &::after {
     content: '';
@@ -145,6 +164,10 @@ body {
     width: 20px;
     aspect-ratio: 1;
     background: url('../assets/icons/trash-icon.svg') no-repeat center / contain;
+  }
+
+  &:hover {
+    background-color: var(--color-gray);
   }
 }
 

@@ -22,7 +22,7 @@
     </div>
     <dialog class="modal" data-js-modal>
       <div class="modal-inner">
-        <h2 class="modal__title">Новая задача</h2>
+        <h2 class="modal__title" data-js-modal-title>Новая задача</h2>
         <button type="button" class="modal__close-button" id="closeModal">×</button>
         <form class="modal__form" name="modalForm">
           <label for="modalInput" class="visually-hidden">Заголовок задачи</label>
@@ -30,6 +30,7 @@
           <label for="modalDescriptionInput" class="visually-hidden">Описание задачи</label>
           <textarea class="modal__description-input" id="modalDescriptionInput" autocomplete="off" placeholder="Описание задачи..."></textarea>
           <button type="button" class="modal__button button" id="createTask">Сохранить задачу</button>
+          <button type="button" class="modal__button button hidden" id="editTask">Сохранить изменения</button>
         </form>
         <div class="modal__error-message" data-js-modal-error></div>
       </div>

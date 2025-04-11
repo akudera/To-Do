@@ -2,8 +2,11 @@ import Task from './task.js'
 
 export default class TaskManager {
   #modalInstance
+  #editTaskId
+  
   #selectors = {
     taskList: '[data-js-task-list]',
+    modalTitle: '[data-js-modal-title]',
   }
 
   #ids = {
@@ -13,6 +16,9 @@ export default class TaskManager {
     createTaskBtn: 'createTask',
     addTask: 'addTask',
     searchInput: 'searchInput',
+    addTaskButton: 'addTask',
+    createTask: 'createTask',
+    editTaskButton: 'editTask'
   }
 
   #storageKey = 'todoTasks'
@@ -25,9 +31,113 @@ export default class TaskManager {
     this.modalTitleInput = document.getElementById(this.#ids.modalInput)
     this.modalDescriptionInput = document.getElementById(this.#ids.modalDescriptionInput)
     this.searchInput = document.getElementById(this.#ids.searchInput)
+    this.addTaskButton = document.getElementById(this.#ids.addTaskButton)
+    this.modalTitle = document.querySelector(this.#selectors.modalTitle)
+    this.createTaskButton = document.getElementById(this.#ids.createTask)
+    this.editTaskButton = document.getElementById(this.#ids.editTaskButton)
+
+    this.TaskListElement.addEventListener('click', (event) => {
+      if (event.target.hasAttribute('data-js-task') || event.target.classList.contains('main__task-title')) {
+        this.editTaskMenu(event.target.textContent, this.getDescription(event.target.dataset.id), event.target.dataset.id)
+      }
+      
+      if (event.target.classList.contains('main__task-delete-button')) {
+        const taskIndexToDelete = this.#tasks.findIndex((task) => String(task.id) === String(event.target.parentElement.dataset.id))
+
+        if (taskIndexToDelete !== -1) {
+          this.deleteTask(event, taskIndexToDelete)
+        } else {
+          console.warn(`Задача с ID ${event.target.parentElement.dataset.id} не найдена в массиве`);
+        }
+      }
+    })
+
+    this.bindAddTaskEnterEvent = this.addTaskEnterEvent.bind(this)
+    this.bindEditTaskEnterEvent = this.editTaskEnterEvent.bind(this)
+
+    this.modalTitleInput.addEventListener('keydown', this.bindAddTaskEnterEvent)
+
+    this.createTaskButton.addEventListener('click', () => {this.addTask()})
+
+    this.addTaskButton.addEventListener('click', () => {
+      this.attachAddEnterEvent()
+      this.editTaskButton.classList.add('hidden')
+      this.createTaskButton.classList.remove('hidden')
+      this.#modalInstance.openModal()
+      this.modalTitleInput.focus()
+    })
+
+    this.editTaskButton.addEventListener('click', (event) => {
+      event.preventDefault()
+      this.editTaskEvent(event, this.#editTaskId)
+    })
 
     this.loadTasksFromLocalStorage()
     this.renderTasks()
+  }
+
+  addTaskEnterEvent(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      this.addTask()
+    }
+  }
+
+  editTaskEnterEvent(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      this.editTaskEvent(event, this.#editTaskId)
+    }
+  }
+
+  attachAddEnterEvent() {
+    this.modalTitleInput.removeEventListener('keydown', this.bindEditTaskEnterEvent)
+    this.modalTitleInput.addEventListener('keydown', this.bindAddTaskEnterEvent)
+  }
+
+  attachEditEnterEvent() {
+    this.modalTitleInput.removeEventListener('keydown', this.bindAddTaskEnterEvent)
+    this.modalTitleInput.addEventListener('keydown', this.bindEditTaskEnterEvent)
+  }
+
+  deleteTask(event, taskIndexToDelete) {
+    this.#tasks.splice(taskIndexToDelete, 1)
+    this.saveTasksToLocalStorage()
+
+    event.target.parentElement.remove()
+    this.filterTasks(this.searchInput.value)
+
+    if (this.#tasks.length === 0) {
+      if (!this.TaskListElement.querySelector('.main__item--info')) {
+        this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
+      }
+    }
+  }
+
+  editTaskEvent(event, taskId) {
+    event.preventDefault()
+    if (this.modalTitleInput.value.trim()) {
+      const title = this.modalTitleInput.value.trim()
+      const description = this.modalDescriptionInput.value.trim()
+      
+      const task = this.#tasks.find((task) => String(taskId) === String(task.id))
+      task.title = title
+      task.description = description
+      this.saveTasksToLocalStorage()
+      
+      const taskTitleElement = this.TaskListElement.querySelector(`[data-id="${taskId}"] .main__task-title`)
+      taskTitleElement.textContent = title
+  
+      this.modalTitleInput.value = ''
+      this.modalDescriptionInput.value = ''
+      this.searchInput.value = ''
+
+      this.#modalInstance.closeModal()
+    } else {
+      this.#modalInstance.showError('Укажите заголовок задачи!')
+      this.modalTitleInput.focus()
+    }
+    this.editTaskButton.classList.add('hidden')
   }
 
   loadTasksFromLocalStorage() {
@@ -59,35 +169,39 @@ export default class TaskManager {
     }
   }
 
+  getDescription(taskId) {
+    const task = this.#tasks.find((task) => task.id === taskId)
+    return task?.description || ''
+  }
+
+  editTaskMenu(title, description, taskId) {
+    this.#editTaskId = taskId
+    this.attachEditEnterEvent()
+    this.createTaskButton.classList.add('hidden')
+    this.editTaskButton.classList.remove('hidden')
+    this.modalTitle.textContent = 'Редактировать задачу'
+    this.modalTitleInput.value = title
+    this.modalDescriptionInput.value = description
+    this.#modalInstance.openModal()
+  }
+
   createTaskElement(task) {
     const newTask = document.createElement('li')
     
-    newTask.textContent = task.title
     newTask.dataset.id = task.id
     newTask.setAttribute('data-js-task', '')
     newTask.classList.add('main__item')
 
+    const newTaskTitle = document.createElement('span')
+    newTaskTitle.textContent = task.title
+    newTaskTitle.classList.add('main__task-title')
+
+    newTask.appendChild(newTaskTitle)
+
     const deleteTaskButton = document.createElement('button')
     deleteTaskButton.classList.add('main__task-delete-button')
-    deleteTaskButton.addEventListener('click', () => {
-      const taskIndexToDelete = this.#tasks.findIndex((task) => String(task.id) === String(deleteTaskButton.parentElement.dataset.id))
-
-      if (taskIndexToDelete !== -1) {
-        this.#tasks.splice(taskIndexToDelete, 1)
-        this.saveTasksToLocalStorage()
-
-        deleteTaskButton.parentElement.remove()
-        this.filterTasks(this.searchInput.value)
-
-        if (this.#tasks.length === 0) {
-          if (!this.TaskListElement.querySelector('.main__item--info')) {
-            this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
-          }
-        }
-      } else {
-        console.warn(`Задача с ID ${deleteTaskButton.parentElement.dataset.id} не найдена в массиве`);
-      }
-    })
+    deleteTaskButton.ariaLabel = 'Удалить задачу'
+    deleteTaskButton.title = 'Удалить задачу'
     newTask.appendChild(deleteTaskButton)
     
     return newTask

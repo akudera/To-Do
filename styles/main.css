@@ -4,6 +4,7 @@
   --color-light: #f4f4f4;
   --color-white: #ffffff;
   --color-light-grin: #5cb85c;
+  --color-grin: #56ac56;
   --color-light-gray: #cccccc;
   --color-dark-gray: #333333;
   --color-gray: #aaaaaa;
@@ -14,6 +15,8 @@
   --border-radius-menu: 8px;
 
   --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  --transition-duration: 0.2s;
 }
 
 .visually-hidden {
@@ -37,6 +40,11 @@
   color: var(--color-white);
   padding: 10px 15px;
   white-space: nowrap;
+  transition: var(--transition-duration) background-color;
+
+  &:hover {
+    background-color: var(--color-grin);
+  }
 }
 
 .input {
