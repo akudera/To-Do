@@ -164,7 +164,7 @@ body {
     display: block;
     width: 20px;
     aspect-ratio: 1;
-    background: url('../assets/icons/trash-icon.svg') no-repeat center / contain;
+    background: url('../public/icons/trash-icon.svg') no-repeat center / contain;
   }
 
   &:hover {
