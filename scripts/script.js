@@ -1,3 +1,5 @@
+import '../scss/styles.scss'
+
 import TaskManager from './taskManager.js'
 import Modal from './modal.js'
 

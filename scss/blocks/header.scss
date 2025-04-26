@@ -1,0 +1,107 @@
+.main {
+  &__content {
+    padding: 40px 30px 20px;
+    max-width: 700px;
+    background-color: var(--color-white);
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius-menu);
+  }
+  
+  &__header {
+    width: 100%;
+  }
+
+  &__title {
+    font-size: clamp(26px, 3.14vw, 32px);
+  }
+
+  &__controllers {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px 10px;
+    width: 100%;
+  }
+
+  &__input {
+    flex-grow: 1;
+    font-size: clamp(14px, 1.57vw, 16px);
+  }
+
+  &__list {
+    width: 100%;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--color-light-contrast);
+    padding: 12px 15px;
+    border-radius: 4px;
+    border-left: 5px solid var(--color-light-grin);
+    display: flex;
+    align-items: center;
+    font-size: clamp(14px, 1.57vw, 16px);
+    word-break: break-all;
+    transition: var(--transition-duration) background-color;
+  
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  
+    &:not(.main__item--info):hover {
+      background-color: var(--color-light-gray);
+      cursor: pointer;
+    }
+  
+    &:not(.main__item--info):hover:has(> .main__task-delete-button:hover) {
+      background-color: var(--color-light-contrast);
+    }
+  }
+
+  &__item--info {
+    border: none;
+    filter: brightness(0.95);
+  }
+
+  &__task-title {
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+
+  &__task-delete-button {
+    align-self: flex-start;
+    display: flex;
+    justify-content: center;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0;
+    background-color: var(--color-light-gray);
+    min-width: 30px; 
+    width: 30px;
+    aspect-ratio: 1;
+    transition: var(--transition-duration) background-color;
+  
+    &::after {
+      content: '';
+      display: block;
+      width: 20px;
+      aspect-ratio: 1;
+      background: url('../public/icons/trash-icon.svg') no-repeat center / contain;
+    }
+  
+    &:hover {
+      background-color: var(--color-gray);
+    }
+  }
+}
+
+@media (max-width: 462px) {
+  .main__controllers {
+    flex-direction: column;
+  }
+  
+  .main__content {
+    row-gap: 10px;
+  }
+}

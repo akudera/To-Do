@@ -1,0 +1,71 @@
+.modal {
+  max-width: 750px;
+  width: 80%;
+  border: none;
+  border-radius: var(--border-radius-menu);
+  padding: 0;
+
+  &::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &-inner {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    padding: 25px;
+    padding-bottom: 80px;
+  }
+
+  &__close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    padding-inline: 0.3em;
+    font-size: 28px;
+    color: var(--color-gray);
+  
+    &:hover {
+      color: var(--color-dark-gray)
+    }
+  }
+
+  &__title {
+    align-self: center;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__input {
+    font-size: clamp(14px, 1.57vw, 16px);
+    width: 100%;
+  
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__description-input {
+    width: 100%;
+    border-radius: var(--border-radius);
+    border: var(--border);
+    padding: 10px;
+    font-size: 12px;
+    resize: vertical;
+    min-height: 100px;
+  
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
+
+  &__error-message {
+    color: red;
+    align-self: center;
+  }
+}

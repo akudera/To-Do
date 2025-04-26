@@ -1,24 +1,3 @@
-@import url('./normalize.css');
-
-:root {
-  --color-light: #f4f4f4;
-  --color-white: #ffffff;
-  --color-light-grin: #5cb85c;
-  --color-grin: #56ac56;
-  --color-light-gray: #cccccc;
-  --color-dark-gray: #333333;
-  --color-gray: #aaaaaa;
-  --color-light-contrast: #eeeeee;
-
-  --border: 1px solid var(--color-light-gray);
-  --border-radius: 4px;
-  --border-radius-menu: 8px;
-
-  --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-  --transition-duration: 0.2s;
-}
-
 .visually-hidden {
   position: absolute !important;
   width: 1px !important;
@@ -30,6 +9,15 @@
   clip-path: inset(100%) !important;
   clip: rect(0 0 0 0) !important;
   overflow: hidden !important;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
+  margin-inline: auto;
+  max-width: 700px;
 }
 
 .button {

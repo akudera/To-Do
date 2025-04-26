@@ -10,13 +10,15 @@
 </head>
 <body>
   <main class="main">
-    <div class="main__content">
-      <h1 class="main__title">Мой список дел</h1>
-      <div class="main__controllers">
-        <label for="searchInput" class="visually-hidden">Поиск по заголовку</label>
-        <input type="text" id="searchInput" class="main__input input" placeholder="Поиск по заголовку..."/>
-        <button class="main__button button" type="button" id="addTask">Добавить задачу</button>
-      </div>
+    <div class="main__content container">
+      <header class="main__header">
+        <h1 class="main__title">Мой список дел</h1>
+        <div class="main__controllers">
+          <label for="searchInput" class="visually-hidden">Поиск по заголовку</label>
+          <input type="text" id="searchInput" class="main__input input" placeholder="Поиск по заголовку..."/>
+          <button class="main__button button" type="button" id="addTask">Добавить задачу</button>
+        </div>
+      </header>
       <ul class="main__list" data-js-task-list>
       </ul>
     </div>
