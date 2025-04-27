@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>To-Do</title>
-  <script type="module" crossorigin src="./assets/index-BsL8-7Ps.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-B68dQoNH.css">
+  <script type="module" crossorigin src="./assets/index-BlsK8_3E.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Cwc1emNd.css">
 </head>
 <body>
   <main class="main">
@@ -25,15 +25,23 @@
       <div class="modal-inner">
         <h2 class="modal__title" data-js-modal-title>Новая задача</h2>
         <button type="button" class="modal__close-button" id="closeModal">×</button>
-        <form class="modal__form" name="modalForm">
+        <form class="modal__form" name="modalForm" novalidate>
           <label for="modalInput" class="visually-hidden">Заголовок задачи</label>
-          <input type="text" class="modal__input input" id="modalInput" placeholder="Заголовок задачи (обязательно)" autocomplete="off"/>
+          <input 
+            type="text" 
+            placeholder="Заголовок задачи (обязательно)" 
+            required 
+            class="modal__input input" 
+            id="modalInput" 
+            autocomplete="off"
+            aria-errormessage="error"
+          />
           <label for="modalDescriptionInput" class="visually-hidden">Описание задачи</label>
           <textarea class="modal__description-input" id="modalDescriptionInput" autocomplete="off" placeholder="Описание задачи..."></textarea>
           <button type="button" class="modal__button button" id="createTask">Сохранить задачу</button>
-          <button type="button" class="modal__button button hidden" id="editTask">Сохранить изменения</button>
+          <button type="button" class="modal__button button hidden" id="saveChanges">Сохранить изменения</button>
         </form>
-        <div class="modal__error-message" data-js-modal-error></div>
+        <div class="modal__error-message" id="error" data-js-modal-error></div>
       </div>
     </dialog>
   </main>
