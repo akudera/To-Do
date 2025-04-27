@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .main {
   &__content {
     padding: 40px 30px 20px;
@@ -28,48 +30,47 @@
   }
 
   &__list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
     width: 100%;
   }
 
   &__item {
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--color-light-contrast);
-    padding: 12px 15px;
+    width: 100%;
     border-radius: 4px;
+  }
+
+  &__item-wrapper {
+    @include list-item;
+    justify-content: space-between;
+    min-width: 100%;
     border-left: 5px solid var(--color-light-grin);
-    display: flex;
-    align-items: center;
-    font-size: clamp(14px, 1.57vw, 16px);
-    word-break: break-all;
     transition: var(--transition-duration) background-color;
   
-    &:not(:last-child) {
-      margin-bottom: 10px;
-    }
-  
-    &:not(.main__item--info):hover {
-      background-color: var(--color-light-gray);
+    &:hover {
+      background-color: var(--color-hover-gray);
       cursor: pointer;
     }
   
-    &:not(.main__item--info):hover:has(> .main__task-delete-button:hover) {
+    &:has(.main__item-delete-button:hover) {
       background-color: var(--color-light-contrast);
     }
   }
 
   &__item--info {
+    @include list-item(var(--color-hover-gray));
     border: none;
-    filter: brightness(0.95);
   }
 
-  &__task-title {
+  &__item-title {
     &:not(:last-child) {
       margin-right: 8px;
     }
   }
 
-  &__task-delete-button {
+  &__item-delete-button {
     align-self: flex-start;
     display: flex;
     justify-content: center;

@@ -18,4 +18,4 @@ modal.closeModalButton.addEventListener('click', () => {
   modal.closeModal()
 })
 
-searchInput.addEventListener('input', (event) => { taskManager.filterTasks(event.target.value) })
+searchInput.addEventListener('input', taskManager.debounce((event) => taskManager.filterTasks(event.target.value)) )
