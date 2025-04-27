@@ -96,6 +96,7 @@ export default class TaskManager {
       if (taskIndexToDelete !== -1) {
         this.deleteTask(deleteTask, taskIndexToDelete)
       }
+      
       return
     }
 
@@ -134,6 +135,7 @@ export default class TaskManager {
     this.saveTasksToLocalStorage()
 
     taskElement.remove()
+    
     this.filterTasks(this.searchInput.value)
   }
 
@@ -155,14 +157,13 @@ export default class TaskManager {
   
       this.modalTitleInput.value = ''
       this.modalDescriptionInput.value = ''
-      this.searchInput.value = ''
+      this.filterTasks(this.searchInput.value)
 
       this.#modalInstance.closeModal()
     } else {
       this.#modalInstance.showError('Укажите заголовок задачи!')
       this.modalTitleInput.focus()
     }
-    this.saveEditChangesButton.classList.add('hidden')
   }
 
   loadTasksFromLocalStorage() {
@@ -249,7 +250,7 @@ export default class TaskManager {
       this.modalTitleInput.value = ''
       this.modalDescriptionInput.value = ''
       this.searchInput.value = ''
-      this.filterTasks('')
+      this.filterTasks()
 
       this.#modalInstance.closeModal()
     } else {
@@ -258,17 +259,19 @@ export default class TaskManager {
     }
   }
 
-  filterTasks(value) {
+  filterTasks(value = '') {
+    if (this.tasks.length === 0) {
+      if (!this.TaskListElement.querySelector('.main__item--info')) {
+        this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
+      }
+      return
+    }
+
     if (!value) {
       this.TaskListElement.querySelectorAll('li.hidden:not(.main__item--info)').forEach((task) => {
         task.classList.remove('hidden')
       })
       this.TaskListElement.querySelector('[data-js-not-found]')?.remove()
-      if (this.tasks.length === 0) {
-        if (!this.TaskListElement.querySelector('.main__item--info')) {
-          this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
-        }
-      }
       return
     }
 
