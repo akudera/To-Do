@@ -22,16 +22,17 @@
 
 .button {
   border: none;
-  background-color: var(--color-light-grin);
+  background-color: var(--color-components-bg);
   border-radius: var(--border-radius);
   font-size: clamp(14px, 1.57vw, 16px);
-  color: var(--color-white);
+  color: var(--color-button-text);
   padding: 10px 15px;
   white-space: nowrap;
   transition: var(--transition-duration) background-color;
+  color: var(--color-button-text);
 
   &:hover {
-    background-color: var(--color-grin);
+    background-color: var(--color-hover-components-bg);
   }
 }
 

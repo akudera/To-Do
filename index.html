@@ -12,9 +12,37 @@
       <header class="main__header">
         <h1 class="main__title">Мой список дел</h1>
         <div class="main__controllers">
-          <label for="searchInput" class="visually-hidden">Поиск по заголовку</label>
-          <input type="text" id="searchInput" class="main__input input" placeholder="Поиск по заголовку..."/>
+          <div class="main__search-container">
+            <label for="searchInput" class="main__label visually-hidden">Поиск по заголовку</label>
+            <input type="text" id="searchInput" class="main__input input" placeholder="Поиск по заголовку..."/>
+            <div
+              src="/public/icons/Search.svg"
+              class="main__search-img"
+              tabindex="0"
+            >
+              <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M26.25 26.25L20.8125 20.8125M23.75 13.75C23.75 19.2728 19.2728 23.75 13.75 23.75C8.22715 23.75 3.75 19.2728 3.75 13.75C3.75 8.22715 8.22715 3.75 13.75 3.75C19.2728 3.75 23.75 8.22715 23.75 13.75Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <button class="main__button button" type="button" id="addTask">Добавить задачу</button>
+          <div class="main__controllers-operations">
+            <button class="main__controller" type="button" aria-label="entering edit mode">
+              <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.4583 4.16668H4.16667C3.61413 4.16668 3.08423 4.38617 2.69353 4.77687C2.30283 5.16757 2.08333 5.69748 2.08333 6.25001V20.8333C2.08333 21.3859 2.30283 21.9158 2.69353 22.3065C3.08423 22.6972 3.61413 22.9167 4.16667 22.9167H18.75C19.3025 22.9167 19.8324 22.6972 20.2231 22.3065C20.6138 21.9158 20.8333 21.3859 20.8333 20.8333V13.5417M19.2708 2.60418C19.6852 2.18978 20.2473 1.95697 20.8333 1.95697C21.4194 1.95697 21.9814 2.18978 22.3958 2.60418C22.8102 3.01858 23.043 3.58063 23.043 4.16668C23.043 4.75273 22.8102 5.31478 22.3958 5.72918L12.5 15.625L8.33333 16.6667L9.375 12.5L19.2708 2.60418Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="main__controller" type="button" aria-label="delete all task">
+              <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3.125 6.25001H5.20833M5.20833 6.25001H21.875M5.20833 6.25001V20.8333C5.20833 21.3859 5.42783 21.9158 5.81853 22.3065C6.20923 22.6972 6.73913 22.9167 7.29167 22.9167H17.7083C18.2609 22.9167 18.7908 22.6972 19.1815 22.3065C19.5722 21.9158 19.7917 21.3859 19.7917 20.8333V6.25001M8.33333 6.25001V4.16668C8.33333 3.61414 8.55283 3.08424 8.94353 2.69354C9.33423 2.30284 9.86413 2.08334 10.4167 2.08334H14.5833C15.1359 2.08334 15.6658 2.30284 16.0565 2.69354C16.4472 3.08424 16.6667 3.61414 16.6667 4.16668V6.25001" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="main__controller" type="button" aria-label="switch theme" data-js-theme-switcher>
+              <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21.875 13.3229C21.7112 15.096 21.0457 16.7858 19.9565 18.1946C18.8673 19.6033 17.3995 20.6727 15.7247 21.2776C14.0499 21.8826 12.2375 21.998 10.4995 21.6105C8.7615 21.223 7.1698 20.3485 5.91067 19.0893C4.65154 17.8302 3.77704 16.2385 3.38951 14.5005C3.00197 12.7625 3.11743 10.9501 3.72237 9.27531C4.32731 7.60053 5.39672 6.13267 6.80545 5.04349C8.21418 3.95431 9.90397 3.28886 11.6771 3.125C10.639 4.52945 10.1394 6.25984 10.2693 8.00147C10.3992 9.7431 11.1499 11.3803 12.3848 12.6152C13.6198 13.8501 15.2569 14.6008 16.9985 14.7307C18.7402 14.8606 20.4706 14.361 21.875 13.3229Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
       <ul class="main__list" data-js-task-list>

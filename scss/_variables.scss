@@ -1,19 +1,35 @@
 :root {
-  --color-light: #f4f4f4;
-  --color-white: #ffffff;
-  --color-light-grin: #5cb85c;
-  --color-grin: #56ac56;
-  --color-hover-gray: #dddddd;
-  --color-light-gray: #c7c7c7;
-  --color-dark-gray: #424242;
-  --color-gray: #aaaaaa;
-  --color-light-contrast: #eeeeee;
+  --color-bg: #FFFEFC;
+  --color-menu-bg: #FFF0E0;
+  --color-task-bg: #FFE3C5;
+  --color-hover-task-bg: #f7dcc0;
+  --color-complete-task-bg: #EFD794;
+  --color-components-bg: #c4cf70;
+  --color-hover-components-bg: #d1dd71;
+  --color-border: #669966;
+  --color-text: #000000;
+  --color-input-field: #FFF8F0;
+  --color-button-text: #FFFFFF;
 
-  --border: 1px solid var(--color-light-gray);
+  --border: 1px solid var(--color-border);
   --border-radius: 4px;
   --border-radius-menu: 8px;
 
-  --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
   --transition-duration: 0.2s;
+
+  --menu-width: 700px;
+}
+
+html.is-dark-theme {
+  --color-bg: #000707;
+  --color-menu-bg: #003131;
+  --color-task-bg: #002323;
+  --color-hover-task-bg: #001a1a;
+  --color-complete-task-bg: #00110B;
+  --color-components-bg: #336633;
+  --color-hover-components-bg: #285828;
+  --color-border: #336633;
+  --color-text: #BAF6BA;
+  --color-input-field: #002323;
+  --color-button-text: #BAF6BA;
 }

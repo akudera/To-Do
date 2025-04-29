@@ -22,6 +22,10 @@ export default class TaskManager {
     taskTitle: '.main__item-title',
     modalTitle: '[data-js-modal-title]',
   }
+
+  svg = {
+    urnIcon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10 12 4 4m0-4-4 4M4 6h16m-4 0-.27-.812c-.263-.787-.394-1.18-.637-1.471a2 2 0 0 0-.803-.578C13.939 3 13.524 3 12.695 3h-1.388c-.829 0-1.244 0-1.596.139a2 2 0 0 0-.803.578c-.243.29-.374.684-.636 1.471L8 6m10 0v10.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C15.72 21 14.88 21 13.2 21h-2.4c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C6 18.72 6 17.88 6 16.2V6"/></svg>'
+  }
   
   tasks = []
 
@@ -221,6 +225,17 @@ export default class TaskManager {
     newTaskInner.classList.add('main__item-wrapper')
     newTaskElement.append(newTaskInner)
 
+    const taskCheckbox = document.createElement('input')
+    taskCheckbox.setAttribute('type', 'checkbox')
+    taskCheckbox.classList.add('main__item-checkbox')
+    taskCheckbox.setAttribute('id', 'taskCheckbox')
+    newTaskInner.append(taskCheckbox)
+
+    const taskCustomCheckbox = document.createElement('div')
+    taskCustomCheckbox.classList.add('main__item-custom-checkbox')
+    taskCustomCheckbox.dataset.jsCheckbox = ''
+    newTaskInner.append(taskCustomCheckbox)
+
     const newTaskTitle = document.createElement('span')
     newTaskTitle.textContent = task.title
     newTaskTitle.classList.add('main__item-title')
@@ -230,6 +245,7 @@ export default class TaskManager {
     deleteTaskButton.classList.add('main__item-delete-button')
     deleteTaskButton.ariaLabel = 'Удалить задачу'
     deleteTaskButton.title = 'Удалить задачу'
+    deleteTaskButton.innerHTML = this.svg.urnIcon
     newTaskInner.append(deleteTaskButton)
     
     return newTaskElement

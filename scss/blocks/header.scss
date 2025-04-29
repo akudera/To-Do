@@ -4,9 +4,9 @@
   &__content {
     padding: 40px 30px 20px;
     max-width: 700px;
-    background-color: var(--color-white);
-    box-shadow: var(--shadow);
+    background-color: var(--color-menu-bg);
     border-radius: var(--border-radius-menu);
+    border: var(--border);
   }
   
   &__header {
@@ -18,15 +18,84 @@
   }
 
   &__controllers {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     justify-content: space-between;
-    gap: 20px 10px;
+    gap: 10px;
     width: 100%;
   }
 
+  &__search-container {
+    position: relative;
+    grid-column: 3 span;
+  }
+
   &__input {
-    flex-grow: 1;
+    position: relative;
+    width: 100%;
     font-size: clamp(14px, 1.57vw, 16px);
+    background-color: var(--color-input-field);
+    color: var(--color-text);
+    
+    &::placeholder {
+      color: inherit;
+      filter: brightness(0.8);
+    }
+  }
+
+  &__search-img {
+    position: absolute;
+    display: block;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+
+    & svg path {
+      transition-duration: var(--transition-duration);
+      stroke: var(--color-text);
+    }
+
+    &:hover svg path {
+      stroke: var(--color-border)
+    }
+  }
+
+  &__controllers-operations {
+    display: flex;
+    column-gap: 10px;
+    grid-column: 4 span;
+    height: 35px;
+    padding: 5px 20px;
+    background-color: var(--color-task-bg);
+    border: var(--border);
+    border-radius: var(--border-radius)
+  }
+
+  &__controller {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    padding: 0;
+    aspect-ratio: 1;
+    background-color: transparent;
+    transition: fill var(--transition-duration);
+
+    & svg path {
+      transition-duration: var(--transition-duration);
+      stroke: var(--color-text);
+    }
+
+    &:hover svg path {
+      stroke: var(--color-border);
+    }
+
+    &:last-child {
+      margin-left: auto;
+    }
   }
 
   &__list {
@@ -44,65 +113,105 @@
 
   &__item-wrapper {
     @include list-item;
-    justify-content: space-between;
+    position: relative;
+    justify-content: flex-start;
     min-width: 100%;
-    border-left: 5px solid var(--color-light-grin);
+    background-color: var(--color-task-bg);
+    border: var(--border);
+    border-left: 5px solid var(--color-border);
     transition: var(--transition-duration) background-color;
   
     &:hover {
-      background-color: var(--color-hover-gray);
+      background-color: var(--color-hover-task-bg);
       cursor: pointer;
     }
   
     &:has(.main__item-delete-button:hover) {
-      background-color: var(--color-light-contrast);
+      background-color: var(--color-task-bg);
+    }
+
+    &:has(.main__item-checkbox:checked) {
+      text-decoration: line-through;
+      background-color: var(--color-complete-task-bg);
+    }
+  }
+
+  &__item-checkbox {
+    position: absolute;
+    margin: 0;
+    width: 32px;
+    aspect-ratio: 1;
+    z-index: 200;
+    appearance: none;
+    outline: none;
+  }
+
+  &__item-custom-checkbox {
+    --check-image: url('/public/icons/Check.svg');
+    display: flex;
+    width: 30px;
+    aspect-ratio: 1;
+    background-color: transparent;
+    border: var(--border);
+    border-width: 2px;
+    border-radius: var(--border-radius-menu);
+    margin-right: 0.63em;
+
+    .main__item-checkbox:checked + & {
+      background: var(--check-image) no-repeat center / contain;
+    }
+
+    .main__item-checkbox:focus-visible + & {
+      outline: 3px dashed var(--color-border);
     }
   }
 
   &__item--info {
-    @include list-item(var(--color-hover-gray));
+    @include list-item(var(--color-task-bg));
     border: none;
   }
 
   &__item-title {
+    font-size: 16px;
+
     &:not(:last-child) {
       margin-right: 8px;
     }
   }
 
   &__item-delete-button {
-    align-self: flex-start;
-    display: flex;
-    justify-content: center;
-    border: none;
-    border-radius: var(--border-radius);
-    padding: 0;
-    background-color: var(--color-light-gray);
-    min-width: 30px; 
+    @include control-button;
+    margin-left: auto;
     width: 30px;
-    aspect-ratio: 1;
+    background-color: var(--color-components-bg);
     transition: var(--transition-duration) background-color;
-  
-    &::after {
-      content: '';
-      display: block;
-      width: 20px;
-      aspect-ratio: 1;
-      background: url('../public/icons/trash-icon.svg') no-repeat center / contain;
-    }
-  
+
     &:hover {
-      background-color: var(--color-gray);
+      background-color: var(--color-hover-components-bg);
+    }
+
+    & svg {
+      width: 25px;
+      aspect-ratio: 1;
+      pointer-events: none;
+
+      & path {
+        stroke: var(--color-text)
+      }
+    }
+
+    &::after {
+      display: none;
     }
   }
 }
 
 @media (max-width: 462px) {
-  .main__controllers {
-    flex-direction: column;
+  .main__search-container {
+    grid-column: 4 span;
   }
-  
-  .main__content {
-    row-gap: 10px;
+
+  .main__button {
+    grid-column: 4 span;
   }
 }

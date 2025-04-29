@@ -1,6 +1,7 @@
 body {
-  background-color: var(--color-light);
+  background-color: var(--color-bg);
   font-family: sans-serif;
+  color: var(--color-text);
 }
 
 .main {
@@ -13,4 +14,11 @@ body {
 
 .hidden {
   display: none !important;
+}
+
+* {
+  &:focus-visible {
+    outline: 3px dashed var(--color-border);
+    outline-offset: 1px;
+  }
 }

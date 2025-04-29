@@ -1,9 +1,10 @@
 .modal {
   max-width: 750px;
   width: 80%;
-  border: none;
+  border: var(--border);
   border-radius: var(--border-radius-menu);
   padding: 0;
+  background-color: var(--color-menu-bg);
 
   &::backdrop {
     background-color: rgba(0, 0, 0, 0.5);
@@ -25,15 +26,17 @@
     border: none;
     padding-inline: 0.3em;
     font-size: 28px;
-    color: var(--color-gray);
+    color: var(--color-text);
+    transition: color var(--transition-duration);
   
     &:hover {
-      color: var(--color-dark-gray)
+      color: var(--color-border);
     }
   }
 
   &__title {
     align-self: center;
+    color: var(--color-text)
   }
 
   &__form {
@@ -42,8 +45,10 @@
   }
 
   &__input {
+    background-color: var(--color-input-field);
     font-size: clamp(14px, 1.57vw, 16px);
     width: 100%;
+    color: var(--color-text);
   
     &:not(:last-child) {
       margin-bottom: 10px;
@@ -51,6 +56,8 @@
   }
 
   &__description-input {
+    background-color: var(--color-input-field);
+    color: var(--color-text);
     width: 100%;
     border-radius: var(--border-radius);
     border: var(--border);
