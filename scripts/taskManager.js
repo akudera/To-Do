@@ -228,7 +228,7 @@ export default class TaskManager {
     const taskCheckbox = document.createElement('input')
     taskCheckbox.setAttribute('type', 'checkbox')
     taskCheckbox.classList.add('main__item-checkbox')
-    taskCheckbox.setAttribute('id', 'taskCheckbox')
+    taskCheckbox.setAttribute('name', 'taskCheckbox')
     newTaskInner.append(taskCheckbox)
 
     const taskCustomCheckbox = document.createElement('div')
