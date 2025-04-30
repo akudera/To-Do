@@ -4,7 +4,7 @@ import TaskManager from './taskManager.js'
 import Modal from './modal.js'
 import ThemeSwitcher from './themeSwitcher.js'
 
-const themeSwitcher = new ThemeSwitcher()
+new ThemeSwitcher()
 const modal = new Modal()
 const taskManager = new TaskManager(modal)
 

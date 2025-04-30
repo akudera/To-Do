@@ -1,9 +1,10 @@
 import Task from './task.js'
+import StorageManager from './storageManager.js'
 
 export default class TaskManager {
+  #storageManager
   #modalInstance
   editTaskId
-  #storageKey
   
   ids = {
     closeModalBtn: 'closeModal',
@@ -21,6 +22,7 @@ export default class TaskManager {
     taskWrapper: '.main__item-wrapper',
     taskTitle: '.main__item-title',
     modalTitle: '[data-js-modal-title]',
+    checkbox: '[data-js-checkbox]',
   }
 
   svg = {
@@ -31,7 +33,7 @@ export default class TaskManager {
 
   constructor(modalInstance) {
     this.#modalInstance = modalInstance
-    this.#storageKey = 'todoTasks'
+    this.#storageManager = new StorageManager(this.tasks)
 
     this.TaskListElement = document.querySelector(this.selectors.taskList)
     this.modalTitleInput = document.getElementById(this.ids.modalInput)
@@ -44,7 +46,7 @@ export default class TaskManager {
 
     this.bindEvents()
 
-    this.loadTasksFromLocalStorage()
+    this.tasks = this.#storageManager.loadTasksFromLocalStorage(this.tasks) || []
     this.renderTasks()
   }
 
@@ -104,6 +106,10 @@ export default class TaskManager {
       return
     }
 
+    if (event.target.matches(this.selectors.checkbox)) {
+      this.changeTaskStatus(event.target)
+    }
+
     if (event.target.matches(this.selectors.taskWrapper) || event.target.matches(this.selectors.taskTitle)) {
       const target = event.target.closest(this.selectors.task)
       this.editTaskMenu(target.querySelector(this.selectors.taskTitle).textContent, this.getDescription(target.dataset.id), target.dataset.id)
@@ -136,11 +142,22 @@ export default class TaskManager {
 
   deleteTask(taskElement, taskIndexToDelete) {
     this.tasks.splice(taskIndexToDelete, 1)
-    this.saveTasksToLocalStorage()
+    this.#storageManager.saveTasksToLocalStorage(this.tasks)
 
     taskElement.remove()
     
     this.filterTasks(this.searchInput.value)
+  }
+
+  changeTaskStatus(checkbox) {
+    const taskElement = checkbox.closest(this.selectors.task)
+    const taskId = taskElement.dataset.id
+
+    const task = this.tasks.find((task) => String(task.id) === String(taskId))
+    if (!task) return
+    
+    task.isComplete = checkbox.checked
+    this.#storageManager.saveTasksToLocalStorage(this.tasks)
   }
 
   editTaskEvent(event, taskId) {
@@ -153,7 +170,7 @@ export default class TaskManager {
       if (task) {
         task.title = title
         task.description = description
-        this.saveTasksToLocalStorage()
+        this.#storageManager.saveTasksToLocalStorage(this.tasks)
         
         const taskTitleElement = this.TaskListElement.querySelector(`[data-id="${taskId}"] ${this.selectors.taskTitle}`)
         taskTitleElement.textContent = title
@@ -170,22 +187,6 @@ export default class TaskManager {
     }
   }
 
-  loadTasksFromLocalStorage() {
-    const storageTasks = localStorage.getItem(this.#storageKey)
-    if (storageTasks) {
-      try {
-        const parsedStorageTasks = JSON.parse(storageTasks)
-        this.tasks = parsedStorageTasks.map((task) => new Task(task.title, task.description, task.id))
-      } catch (error) {
-        console.error("Ошибка при парсинге задачи из LocalStorage:", error)
-      }      
-    }
-  }
-
-  saveTasksToLocalStorage() {
-    localStorage.setItem(this.#storageKey, JSON.stringify(this.tasks))
-  }
-
   renderTasks(taskToRender = this.tasks) {
     if (taskToRender.length === 0) {
       if (!this.TaskListElement.querySelector('.main__item--info')) {
@@ -194,11 +195,17 @@ export default class TaskManager {
     } else {
       this.TaskListElement.innerHTML = ''
       taskToRender.forEach((task) => {
-        this.TaskListElement?.append(this.createTaskElement(task))
+        const taskElement = this.createTaskElement(task)
+        this.TaskListElement?.append(taskElement)
+
+        if (task.isComplete) {
+          const checkbox = taskElement.querySelector(this.selectors.checkbox)
+          checkbox.checked = true
+        }
       })
     }
   }
-
+  
   getDescription(taskId) {
     const task = this.tasks.find((task) => task.id === taskId)
     return task?.description || ''
@@ -229,11 +236,11 @@ export default class TaskManager {
     taskCheckbox.setAttribute('type', 'checkbox')
     taskCheckbox.classList.add('main__item-checkbox')
     taskCheckbox.setAttribute('name', 'taskCheckbox')
+    taskCheckbox.dataset.jsCheckbox = ''
     newTaskInner.append(taskCheckbox)
 
     const taskCustomCheckbox = document.createElement('div')
     taskCustomCheckbox.classList.add('main__item-custom-checkbox')
-    taskCustomCheckbox.dataset.jsCheckbox = ''
     newTaskInner.append(taskCustomCheckbox)
 
     const newTaskTitle = document.createElement('span')
@@ -258,7 +265,7 @@ export default class TaskManager {
       
       const task = new Task(title, description)
       this.tasks.unshift(task)
-      this.saveTasksToLocalStorage()
+      this.#storageManager.saveTasksToLocalStorage(this.tasks)
       
       this.TaskListElement?.prepend(this.createTaskElement(task))
       this.TaskListElement?.querySelector('.main__item--info')?.remove()

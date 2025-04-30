@@ -51,15 +51,10 @@
     transform: translateY(-50%);
     width: 30px;
     height: 30px;
-    cursor: pointer;
 
     & svg path {
       transition-duration: var(--transition-duration);
       stroke: var(--color-text);
-    }
-
-    &:hover svg path {
-      stroke: var(--color-border)
     }
   }
 
