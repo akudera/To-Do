@@ -104,17 +104,20 @@
   &__item {
     width: 100%;
     border-radius: 4px;
+
+    &:has(.is-dragging) {
+      background-color: var(--color-components-bg);
+    }
   }
 
   &__item-wrapper {
     @include list-item;
-    position: relative;
     justify-content: flex-start;
     min-width: 100%;
     background-color: var(--color-task-bg);
     border: var(--border);
     border-left: 5px solid var(--color-border);
-    transition: var(--transition-duration) background-color;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
   
     &:hover {
       background-color: var(--color-hover-task-bg);
@@ -129,9 +132,30 @@
       text-decoration: line-through;
       background-color: var(--color-complete-task-bg);
     }
+
+    &.is-dragging {
+      transform: scaleX(1.02);
+      background-color: var(--color-hover-task-bg);
+    }
+  }
+
+  &__item-dnd {
+    @include control-button;
+    flex-shrink: 0;
+    width: 32px;
+    padding: 5px 10px;
+    background-color: transparent;
+    margin-right: 0.63em;
+    touch-action: none;
+
+    & svg,
+    & path {
+      pointer-events: none;
+    }
   }
 
   &__item-checkbox {
+    align-self: flex-start;
     position: absolute;
     margin: 0;
     width: 32px;
@@ -143,6 +167,7 @@
 
   &__item-custom-checkbox {
     --check-image: url('/public/icons/Check.svg');
+    align-self: flex-start;
     flex-shrink: 0;
     display: flex;
     width: 30px;
@@ -163,7 +188,8 @@
   }
 
   &__item--info {
-    @include list-item(var(--color-task-bg));
+    @include list-item;
+    background-color: var(--color-hover-task-bg);
     border: none;
   }
 
@@ -177,6 +203,7 @@
 
   &__item-delete-button {
     @include control-button;
+    align-self: flex-start;
     flex-shrink: 0;
     margin-left: auto;
     width: 30px;
@@ -195,10 +222,6 @@
       & path {
         stroke: var(--color-text)
       }
-    }
-
-    &::after {
-      display: none;
     }
   }
 }

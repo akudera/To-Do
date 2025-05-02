@@ -1,9 +1,12 @@
 import Task from './task.js'
 import StorageManager from './storageManager.js'
+import RenderTasks from './renderTasks.js'
+import DragAndDrop from './dragAndDrop.js'
 
 export default class TaskManager {
   #storageManager
   #modalInstance
+  #dndInstance
   editTaskId
   
   ids = {
@@ -25,17 +28,12 @@ export default class TaskManager {
     checkbox: '[data-js-checkbox]',
   }
 
-  svg = {
-    urnIcon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10 12 4 4m0-4-4 4M4 6h16m-4 0-.27-.812c-.263-.787-.394-1.18-.637-1.471a2 2 0 0 0-.803-.578C13.939 3 13.524 3 12.695 3h-1.388c-.829 0-1.244 0-1.596.139a2 2 0 0 0-.803.578c-.243.29-.374.684-.636 1.471L8 6m10 0v10.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C15.72 21 14.88 21 13.2 21h-2.4c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C6 18.72 6 17.88 6 16.2V6"/></svg>'
-  }
-  
-  tasks = []
-
   constructor(modalInstance) {
     this.#modalInstance = modalInstance
-    this.#storageManager = new StorageManager(this.tasks)
+    this.#storageManager = new StorageManager()
+    this.#dndInstance = new DragAndDrop(10)
 
-    this.TaskListElement = document.querySelector(this.selectors.taskList)
+    this.TaskListElement = RenderTasks.listElement
     this.modalTitleInput = document.getElementById(this.ids.modalInput)
     this.modalDescriptionInput = document.getElementById(this.ids.modalDescriptionInput)
     this.searchInput = document.getElementById(this.ids.searchInput)
@@ -45,9 +43,7 @@ export default class TaskManager {
     this.saveEditChangesButton = document.getElementById(this.ids.saveEditChanges)
 
     this.bindEvents()
-
-    this.tasks = this.#storageManager.loadTasksFromLocalStorage(this.tasks) || []
-    this.renderTasks()
+    RenderTasks.renderTasks()
   }
 
   debounce(callback, ms = 200) {
@@ -97,7 +93,7 @@ export default class TaskManager {
 
       if (!confirmDelete) return
 
-      const taskIndexToDelete = this.tasks.findIndex((task) => String(task.id) === String(event.target.closest(this.selectors.task).dataset.id))
+      const taskIndexToDelete = RenderTasks.tasks.findIndex((task) => String(task.id) === String(event.target.closest(this.selectors.task).dataset.id))
 
       if (taskIndexToDelete !== -1) {
         this.deleteTask(deleteTask, taskIndexToDelete)
@@ -141,23 +137,24 @@ export default class TaskManager {
   }
 
   deleteTask(taskElement, taskIndexToDelete) {
-    this.tasks.splice(taskIndexToDelete, 1)
-    this.#storageManager.saveTasksToLocalStorage(this.tasks)
+    RenderTasks.tasks.splice(taskIndexToDelete, 1)
+    this.#storageManager.saveTasksToLocalStorage(RenderTasks.tasks)
 
     taskElement.remove()
     
     this.filterTasks(this.searchInput.value)
+    this.#dndInstance.resetDragMode()
   }
 
   changeTaskStatus(checkbox) {
     const taskElement = checkbox.closest(this.selectors.task)
     const taskId = taskElement.dataset.id
 
-    const task = this.tasks.find((task) => String(task.id) === String(taskId))
+    const task = RenderTasks.tasks.find((task) => String(task.id) === String(taskId))
     if (!task) return
     
     task.isComplete = checkbox.checked
-    this.#storageManager.saveTasksToLocalStorage(this.tasks)
+    this.#storageManager.saveTasksToLocalStorage(RenderTasks.tasks)
   }
 
   editTaskEvent(event, taskId) {
@@ -166,11 +163,11 @@ export default class TaskManager {
       const title = this.modalTitleInput.value.trim()
       const description = this.modalDescriptionInput.value.trim()
       
-      const task = this.tasks.find((task) => String(taskId) === String(task.id))
+      const task = RenderTasks.tasks.find((task) => String(taskId) === String(task.id))
       if (task) {
         task.title = title
         task.description = description
-        this.#storageManager.saveTasksToLocalStorage(this.tasks)
+        this.#storageManager.saveTasksToLocalStorage(RenderTasks.tasks)
         
         const taskTitleElement = this.TaskListElement.querySelector(`[data-id="${taskId}"] ${this.selectors.taskTitle}`)
         taskTitleElement.textContent = title
@@ -186,28 +183,9 @@ export default class TaskManager {
       this.modalTitleInput.focus()
     }
   }
-
-  renderTasks(taskToRender = this.tasks) {
-    if (taskToRender.length === 0) {
-      if (!this.TaskListElement.querySelector('.main__item--info')) {
-        this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
-      }
-    } else {
-      this.TaskListElement.innerHTML = ''
-      taskToRender.forEach((task) => {
-        const taskElement = this.createTaskElement(task)
-        this.TaskListElement?.append(taskElement)
-
-        if (task.isComplete) {
-          const checkbox = taskElement.querySelector(this.selectors.checkbox)
-          checkbox.checked = true
-        }
-      })
-    }
-  }
   
   getDescription(taskId) {
-    const task = this.tasks.find((task) => task.id === taskId)
+    const task = RenderTasks.tasks.find((task) => task.id === taskId)
     return task?.description || ''
   }
 
@@ -222,57 +200,22 @@ export default class TaskManager {
     this.#modalInstance.openModal()
   }
 
-  createTaskElement(task) {
-    const newTaskElement = document.createElement('li')
-    newTaskElement.dataset.id = task.id
-    newTaskElement.setAttribute('data-js-task', '')
-    newTaskElement.classList.add('main__item')
-
-    const newTaskInner = document.createElement('div')
-    newTaskInner.classList.add('main__item-wrapper')
-    newTaskElement.append(newTaskInner)
-
-    const taskCheckbox = document.createElement('input')
-    taskCheckbox.setAttribute('type', 'checkbox')
-    taskCheckbox.classList.add('main__item-checkbox')
-    taskCheckbox.setAttribute('name', 'taskCheckbox')
-    taskCheckbox.dataset.jsCheckbox = ''
-    newTaskInner.append(taskCheckbox)
-
-    const taskCustomCheckbox = document.createElement('div')
-    taskCustomCheckbox.classList.add('main__item-custom-checkbox')
-    newTaskInner.append(taskCustomCheckbox)
-
-    const newTaskTitle = document.createElement('span')
-    newTaskTitle.textContent = task.title
-    newTaskTitle.classList.add('main__item-title')
-    newTaskInner.append(newTaskTitle)
-
-    const deleteTaskButton = document.createElement('button')
-    deleteTaskButton.classList.add('main__item-delete-button')
-    deleteTaskButton.ariaLabel = 'Удалить задачу'
-    deleteTaskButton.title = 'Удалить задачу'
-    deleteTaskButton.innerHTML = this.svg.urnIcon
-    newTaskInner.append(deleteTaskButton)
-    
-    return newTaskElement
-  }
-
   addTask() {
     if (this.modalTitleInput.value.trim()) {
       const title = this.modalTitleInput.value.trim()
       const description = this.modalDescriptionInput.value.trim()
       
       const task = new Task(title, description)
-      this.tasks.unshift(task)
-      this.#storageManager.saveTasksToLocalStorage(this.tasks)
+      RenderTasks.tasks.unshift(task)
+      this.#storageManager.saveTasksToLocalStorage(RenderTasks.tasks)
       
-      this.TaskListElement?.prepend(this.createTaskElement(task))
+      this.TaskListElement?.prepend(RenderTasks.createTaskElement(task))
       this.TaskListElement?.querySelector('.main__item--info')?.remove()
   
       this.modalTitleInput.value = ''
       this.modalDescriptionInput.value = ''
       this.searchInput.value = ''
+      this.#dndInstance.resetDragMode()
       this.filterTasks()
 
       this.#modalInstance.closeModal()
@@ -283,7 +226,7 @@ export default class TaskManager {
   }
 
   filterTasks(value = '') {
-    if (this.tasks.length === 0) {
+    if (RenderTasks.tasks.length === 0) {
       if (!this.TaskListElement.querySelector('.main__item--info')) {
         this.TaskListElement.innerHTML = '<li class="main__item main__item--info">Список дел пока пуст.</li>'
       }
@@ -310,7 +253,7 @@ export default class TaskManager {
     }
 
     const visibleTasks = this.TaskListElement.querySelectorAll('li:not(.main__item--info):not(.hidden)')
-    if (visibleTasks.length === 0 && this.tasks.length !== 0 && !this.TaskListElement.querySelector('.main__item--info')) {
+    if (visibleTasks.length === 0 && RenderTasks.tasks.length !== 0 && !this.TaskListElement.querySelector('.main__item--info')) {
       const notFoundMessage = document.createElement('li')
       notFoundMessage.textContent = 'По вашему запросу ничего не найдено :('
       notFoundMessage.classList.add('main__item', 'main__item--info')

@@ -3,8 +3,7 @@ import Task from './task.js'
 export default class StorageManager {
   storageKey
   
-  constructor(tasks) {
-    this.tasks = tasks
+  constructor() {
     this.storageKey = 'todoTasks'
   }
 
