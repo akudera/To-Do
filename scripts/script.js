@@ -16,6 +16,13 @@ modal.modalElement.addEventListener('mousedown', (event) => {
   }
 })
 
+modal.modalElement.addEventListener('keydown', (event) => {
+  if (event.code === 'Escape') {
+    event.preventDefault()
+    modal.closeModal()
+  }
+})
+
 modal.closeModalButton.addEventListener('click', () => {
   modal.closeModal()
 })

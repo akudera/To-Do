@@ -186,7 +186,7 @@ export default class DragAndDrop {
       if (!children[i].matches('.hidden')) {
         const previousRect = children[i].getBoundingClientRect()
         const draggableRect = this.state.draggableElement.getBoundingClientRect()
-        if (isKeyboardControl || draggableRect.top < previousRect.top + previousRect.height / 2) {
+        if (isKeyboardControl || draggableRect.top < previousRect.top + previousRect.height / 2 * 0.3) {
           RenderTasks.listElement.insertBefore(this.state.draggableElementWrapper, children[i])
           return
         }
@@ -204,7 +204,7 @@ export default class DragAndDrop {
       if (!children[i].matches('.hidden')) {
         const nextRect = children[i].getBoundingClientRect()
         const draggableRect = this.state.draggableElement.getBoundingClientRect()
-        if (isKeyboardControl || draggableRect.bottom > nextRect.top + nextRect.height / 2) {
+        if (isKeyboardControl || draggableRect.bottom > nextRect.top + nextRect.height / 2 * 1.7) {
           RenderTasks.listElement.insertBefore(this.state.draggableElementWrapper, children[i + 1])
           return
         }
@@ -246,7 +246,7 @@ export default class DragAndDrop {
 
     if (!this.focusState.isDragging) {
       const viewportHeight = document.documentElement.clientHeight
-      const scrollZone = 60
+      const scrollZone = 70
       const scrollSpeed = 180
 
       clearInterval(this.scrollIntervalState.interval)
