@@ -79,12 +79,14 @@
     background-color: transparent;
     transition: fill var(--transition-duration);
 
-    & svg path {
+    & svg path,
+    & svg line {
       transition-duration: var(--transition-duration);
       stroke: var(--color-text);
     }
 
-    &:hover svg path {
+    &:hover svg path,
+    &:hover svg line {
       stroke: var(--color-border);
     }
 

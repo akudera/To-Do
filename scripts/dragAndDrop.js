@@ -31,7 +31,7 @@ export default class DragAndDrop {
 
   svg = {
     onDndModeIcon: '<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.4583 4.16668H4.16667C3.61413 4.16668 3.08423 4.38617 2.69353 4.77687C2.30283 5.16757 2.08333 5.69748 2.08333 6.25001V20.8333C2.08333 21.3859 2.30283 21.9158 2.69353 22.3065C3.08423 22.6972 3.61413 22.9167 4.16667 22.9167H18.75C19.3025 22.9167 19.8324 22.6972 20.2231 22.3065C20.6138 21.9158 20.8333 21.3859 20.8333 20.8333V13.5417M19.2708 2.60418C19.6852 2.18978 20.2473 1.95697 20.8333 1.95697C21.4194 1.95697 21.9814 2.18978 22.3958 2.60418C22.8102 3.01858 23.043 3.58063 23.043 4.16668C23.043 4.75273 22.8102 5.31478 22.3958 5.72918L12.5 15.625L8.33333 16.6667L9.375 12.5L19.2708 2.60418Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    offDndModeIcon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m18.8 16 5.5-5.5c.8-.8.8-2 0-2.8-.3-.4-.8-.7-1.3-.7s-1 .2-1.4.6L16 13.2l-5.5-5.5c-.8-.8-2.1-.8-2.8 0-.4.3-.7.8-.7 1.4s.2 1 .6 1.4l5.5 5.5-5.5 5.5c-.3.4-.6.9-.6 1.5 0 .5.2 1 .6 1.4s.9.6 1.4.6 1-.2 1.4-.6l5.5-5.5 5.5 5.5c.8.8 2.1.8 2.8 0 .8-.8.8-2.1 0-2.8z"/></svg>'
+    offDndModeIcon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="6" y1="18" x2="18" y2="6" /></svg>'
   }
 
   holderTimerState = {
@@ -79,6 +79,8 @@ export default class DragAndDrop {
     dndButtons.forEach((button) => { button.classList.add('hidden') })
     checkboxElements.forEach((checkbox) => { checkbox.classList.remove('hidden'); checkbox.nextElementSibling.classList.remove('hidden') })
     this.dragModeButton.innerHTML = this.svg.onDndModeIcon
+    this.dragModeButton.ariaLabel = 'Войти в режим редактирования'
+    this.dragModeButton.title = 'Войти в режим редактирования'
   }
 
   onDragModeButtonClick() {
@@ -90,6 +92,8 @@ export default class DragAndDrop {
       dndButtons.forEach((button) => { button.classList.remove('hidden') })
       checkboxElements.forEach((checkbox) => { checkbox.classList.add('hidden'); checkbox.nextElementSibling.classList.add('hidden') })
       this.dragModeButton.innerHTML = this.svg.offDndModeIcon
+      this.dragModeButton.ariaLabel = 'Выйти из режима редактирования'
+      this.dragModeButton.title = 'Выйти из режима редактирования'
     } else {
       this.resetDragMode()
     }
@@ -288,7 +292,7 @@ export default class DragAndDrop {
   setDragState(event, setAbsolute = true) {
     if (this.holderTimerState.isHolding || this.focusState.isDragging) {
       const { target, clientY } = event
-      const { top } = target.getBoundingClientRect()
+      const { top } = target.parentElement.getBoundingClientRect()
 
       if (!target.matches(this.selectors.dndButton)) return
 
